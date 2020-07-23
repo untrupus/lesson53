@@ -5,9 +5,9 @@ import AddTaskForm from "./Tasks/AddTaskForm";
 
 const App = () => {
     const [tasks, setTasks] = useState([
-        {task: 'Buy milk', id: 1},
-        {task: 'Walk with dog', id: 2},
-        {task: 'Do homework', id: 3},
+        {task: 'Buy milk', id: 1, done: false},
+        {task: 'Walk with dog', id: 2, done: false},
+        {task: 'Do homework', id: 3, done: false},
     ]);
 
     const [text, setText] = useState([{value: ''}]);
@@ -24,7 +24,7 @@ const App = () => {
         if (text[0].value !== '') {
             let lastIndex = tasks[tasks.length - 1].id;
             const newTasks = [...tasks];
-            newTasks.push({task: text[0].value, id: (lastIndex + 1)});
+            newTasks.push({task: text[0].value, id: (lastIndex + 1), done: false});
             setTasks(newTasks);
 
             const textCopy = [...text];
@@ -39,9 +39,18 @@ const App = () => {
         const index = tasks.findIndex(p => p.id === id);
         const tasksCopy = [...tasks];
         tasksCopy.splice(index, 1);
-
         setTasks(tasksCopy);
+        console.log(index);
     };
+
+    const changeStatus = id => {
+        const index = tasks.findIndex(p => p.id === id);
+        const tasksCopy = [...tasks];
+        const checkedTask = {...tasksCopy[index]};
+        checkedTask.done = !tasks[index].done;
+        tasksCopy[index] = checkedTask;
+        setTasks(tasksCopy);
+    }
 
     let tasksList = tasks.map((task) => {
         return (
@@ -49,6 +58,8 @@ const App = () => {
                 key={task.id}
                 task={task.task}
                 remove={() => removeTask(task.id)}
+                check={task.done}
+                change={() => changeStatus(task.id)}
             />
         )
     });
